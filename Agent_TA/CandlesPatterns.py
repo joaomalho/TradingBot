@@ -30,14 +30,12 @@ class Candles_Patterns():
 
     def __init__(self) -> None:
         
-        self.result_df = pd.DataFrame(columns=['Function', 'Signal', 'Relevance'])
-        self.data_candles = pd.DataFrame()
-        
+        self.result_df = pd.DataFrame(columns=['Function','Signal','Stoploss'])
+         
         # Pattern and Signal detection
         self.candle_pattern = None 
         self.candle_signal = None 
-        self.candle_relevance = None 
-        self.candle_type = None
+        self.candle_stoploss = None
 
 
     def candle_basic_signal(self, data : pd.DataFrame):
@@ -52,32 +50,29 @@ class Candles_Patterns():
         # Data
         last_candle = data.tail(1)
         
-        if last_candle.close.item() > last_candle.close.item():
-            candle_pattern = 'Base Bullish'
-            candle_signal = 1
-            candle_relevance = 0
+        if last_candle.close.item() > last_candle.open.item():
+            self.candle_pattern = 'Base'
+            self.candle_signal = "Buy"
+            self.candle_stoploss = None
                         
         elif last_candle.close.item() < last_candle.open.item():
-            candle_pattern = 'Base Bearish'
-            candle_signal = -1
-            candle_relevance = 0
+            self.candle_pattern = 'Base'
+            self.candle_signal = "Sell"
+            self.candle_stoploss = None
             
         else:
-            candle_pattern = 'Base Flat'
-            candle_signal = 0
-            candle_relevance = 0
+            self.candle_pattern = 'Base'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
 
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
-   
+
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss],
                                                 })], ignore_index=True) 
-            
-            
+         
+        
     def engulfing(self, data : pd.DataFrame):
         '''
         This function detect if the last candle is a bearish or bulish engolfing
@@ -101,36 +96,34 @@ class Candles_Patterns():
         third_last_candle = data.tail(3).head(1)
   
         # View
-        if (second_last_candle.open.item() < second_last_candle.close.item() and third_last_candle.open.item() < third_last_candle.close.item() 
+        if (second_last_candle.open.item() < second_last_candle.close.item() 
+            and third_last_candle.open.item() < third_last_candle.close.item() 
             and second_last_candle.open.item() < third_last_candle.close.item()
             and second_last_candle.close.item() > third_last_candle.open.item()
             and (last_candle.low.item() > second_last_candle.low.item()) & (last_candle.low.item() > third_last_candle.low.item())
             ):
-            candle_pattern = 'Bullish Engulfing'
-            candle_signal = 1
-            candle_relevance = 63
+            self.candle_pattern = 'Engulfing'
+            self.candle_signal = "Buy"
+            self.candle_stoploss = last_candle.low.item() if last_candle.low.item() < second_last_candle.low.item() else second_last_candle.low.item()
 
         elif (second_last_candle.open.item() > second_last_candle.close.item() and third_last_candle.open.item() > third_last_candle.close.item() 
             and second_last_candle.open.item() > third_last_candle.close.item()
             and second_last_candle.close.item() < third_last_candle.open.item()
             and (last_candle.high.item() < second_last_candle.high.item()) & (last_candle.high.item() < third_last_candle.high.item())
             ):
-            candle_pattern = 'Bearish Engulfing'
-            candle_signal = -1
-            candle_relevance = 79
-        else:
-            candle_pattern = 'Engulfing'
-            candle_signal = 0
-            candle_relevance = 0
+            self.candle_pattern = 'Engulfing'
+            self.candle_signal = "Sell"
+            self.candle_stoploss = last_candle.high.item() if last_candle.high.item() > second_last_candle.high.item() else second_last_candle.high.item()
 
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
-   
+        else:
+            self.candle_pattern = 'Engulfing'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
+
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss]
                                                 })], ignore_index=True) 
 
     def morning_star(self, data : pd.DataFrame):
@@ -161,22 +154,18 @@ class Candles_Patterns():
                 and last_candle.open.item() < last_candle.close.item()
                 and second_last_candle.open.item() < last_candle.open.item()) & (second_last_candle.close.item() < last_candle.open.item()
             ):
-            candle_pattern = 'Morning Star'
-            candle_signal = 1
-            candle_relevance = 78
+            self.candle_pattern = 'Morning Star'
+            self.candle_signal = "Buy"
+            self.candle_stoploss = second_last_candle.low.item()
         else:
-            candle_pattern = 'Morning Star'
-            candle_signal = 0
-            candle_relevance = 0
-
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
+            self.candle_pattern = 'Morning Star'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
 
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss],
                                                 })], ignore_index=True) 
         
     def evening_star(self, data : pd.DataFrame):
@@ -194,22 +183,18 @@ class Candles_Patterns():
                 and last_candle.open.item() > last_candle.close.item()
                 and second_last_candle.open.item() > last_candle.open.item()) & (second_last_candle.close.item() > last_candle.open.item()
             ):
-            candle_pattern = 'Evening Star'
-            candle_signal = -1
-            candle_relevance = 78
+            self.candle_pattern = 'Evening Star'
+            self.candle_signal = "Sell"
+            self.candle_stoploss = second_last_candle.high.item()
         else:
-            candle_pattern = 'Evening Star'
-            candle_signal = 0
-            candle_relevance = 0
-
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
+            self.candle_pattern = 'Evening Star'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
 
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss],
                                                 })], ignore_index=True) 
 
     def hammer(self, data : pd.DataFrame):
@@ -232,22 +217,18 @@ class Candles_Patterns():
             and last_candle.low.item() < fiveth_last_candle.low.item()
             and (((last_candle.close.item() - last_candle.open.item())/(last_candle.high.item() - last_candle.close.item())) > 3)  
         ):
-                candle_pattern = 'Hammer'
-                candle_signal = 1
-                candle_relevance = 60
+            self.candle_pattern = 'Hammer'
+            self.candle_signal = "Buy"
+            self.candle_stoploss = last_candle.low.item()
         else:
-            candle_pattern = 'Hammer'
-            candle_signal = 0
-            candle_relevance = 0
-                           
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
+            self.candle_pattern = 'Hammer'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
         
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss],
                                                 })], ignore_index=True) 
 
     def hanging_man(self, data : pd.DataFrame):
@@ -272,21 +253,17 @@ class Candles_Patterns():
             and (((second_last_candle.close.item() - second_last_candle.open.item())/(second_last_candle.high.item() - second_last_candle.close.item())) > 3)  
             and last_candle.open.item() > last_candle.close.item()
         ):
-                candle_pattern = 'Hanging Man'
-                candle_signal = -1
-                candle_relevance = 60
+            self.candle_pattern = 'Hanging Man'
+            self.candle_signal = "Sell"
+            self.candle_stoploss = last_candle.high.item()
         else:
-            candle_pattern = 'Hanging Man'
-            candle_signal = 0
-            candle_relevance = 0
-                           
-        self.candle_pattern = candle_pattern 
-        self.candle_signal = candle_signal
-        self.candle_relevance = candle_relevance
-        
+            self.candle_pattern = 'Hanging Man'
+            self.candle_signal = "Flat"
+            self.candle_stoploss = None
+      
         self.result_df = pd.concat([self.result_df, pd.DataFrame({
                                                     'Function': [self.candle_pattern],
                                                     'Signal': [self.candle_signal],
-                                                    'Relevance': [self.candle_relevance]
+                                                    'Stoploss': [self.candle_stoploss],
                                                 })], ignore_index=True) 
  

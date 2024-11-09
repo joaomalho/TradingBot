@@ -11,7 +11,7 @@ class Tailing_Stoploss():
         
         self.new_stop_loss = None
     
-    def modify_position_tailling(self, tailling_value): # new_take_profit):
+    def modify_position_tailling(self, sup, resis, tailling_value = 0.01): # new_take_profit):
         '''
         This function update the stoploss in the open trade.
         
@@ -50,7 +50,7 @@ class Tailing_Stoploss():
                         "action": mt5.TRADE_ACTION_SLTP,
                         "symbol": symbol,
                         "sl": self.new_stop_loss,
-                        #"tp": new_take_profit,
+                        "tp": resis,
                         "position": order_number
                     }
                     # Send order to MT5
@@ -68,7 +68,7 @@ class Tailing_Stoploss():
                         "action": mt5.TRADE_ACTION_SLTP,
                         "symbol": symbol,
                         "sl": self.new_stop_loss,
-                        #"tp": new_take_profit,
+                        "tp": sup,
                         "position": order_number
                     }
                     # Send order to MT5

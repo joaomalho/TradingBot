@@ -14,7 +14,7 @@ class FrontEnd(ctk.CTk):
         self.timeframe = None
         self.ticker = None
         self.autotrade_set = None
-        self.start = None
+        self.start = False
         self.stop = False
 
         # ============= Aplication Window ============= #
@@ -51,7 +51,7 @@ class FrontEnd(ctk.CTk):
         self.switch_autotrade_var = ctk.StringVar(value="on")
         self.switch_autotrade = ctk.CTkSwitch(self, command=self.switch_autotrade_event,
                                  variable=self.switch_autotrade_var, onvalue="on", offvalue="off")
-        
+
         self.switch_autotrade.grid(row=2, column=1, padx=20, pady=10)
 
         # == Select ticker == #

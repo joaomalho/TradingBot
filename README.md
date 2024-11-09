@@ -2,9 +2,7 @@
  Auto Market Analizer Tool
 
 
-
 # Propostas Funcionais:
-
 * __Agente Risk Manager__
 Media de racios obtidos como benshmark
 Ajudará na decisão de tamanho de lote, alavancagem e posição do stoploss 
@@ -20,7 +18,5 @@ Talib.py -> Deteção de velas
 
 
 # Propostas Front End:
-
 Adicionar os resultados no GUI
 colocar totais do bot no GUI, ganho até à data
-
