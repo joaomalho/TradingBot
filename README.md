@@ -1,5 +1,5 @@
 # Matriz
- Auto Market Analizer
+ Auto Market Analizer Tool
 
 
 
@@ -23,3 +23,4 @@ Talib.py -> Deteção de velas
 
 Adicionar os resultados no GUI
 colocar totais do bot no GUI, ganho até à data
+
