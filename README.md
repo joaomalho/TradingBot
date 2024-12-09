@@ -20,3 +20,23 @@ Talib.py -> Deteção de velas
 # Propostas Front End:
 Adicionar os resultados no GUI
 colocar totais do bot no GUI, ganho até à data
+
+
+# Analisador de Stocks
+
+* __Volume__
+float - Numero de ações disponiveis para investidores publicos comprarem (Poucos M - Penny Stocks) 
+_Yahoo Finance -> Statistics -> Share Statistics_
+
+ALVO: High Volume + Low Supply (Low float better target 20M low)
+
+* __News__
+Stock Screener (Follow the walles)
+_Trading View -> Stock Screener_ (7:00 am - 9:00 am) Qualquer stock nova aqui sugere um bom movimento diario. 
+Destas stocks novas puxar noticias associadas do yahoo p.e.
+
+* __Relative Volume__
+Compara o volume corrente em relação à quantidade de volume que é negociado normalmente. 60 = 60x mais volume.
+
+__News screener__
+* NEXT IMPLEMENTATION
